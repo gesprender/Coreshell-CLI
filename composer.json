@@ -1,0 +1,20 @@
+{
+    "version": "0.0.1",
+    "name": "gesprender/cli",
+    "description": "CoreShell CLI for GesPrender Core Framework",
+    "type": "library",
+    "license": "proprietary",
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Coreshell\\": "/"
+        }
+    },
+    "require": {
+        "php": "^7.4.0|^8.1",
+        "vlucas/phpdotenv": "^5.5"
+    }
+}
