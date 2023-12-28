@@ -61,7 +61,7 @@ class Make extends AbstractConsoleLibrary
         } else {
             copy($source, $target);
         }
-        exec("rmdir /s /q dist");
+        exec("rm -r dist");
     }
 
     public static function project()
