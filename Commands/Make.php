@@ -9,7 +9,7 @@ class Make extends AbstractConsoleLibrary
 
     public static function build()
     {
-        echo self::colorText(" [●] Ejecutando build...\n", self::GREEN);
+        echo self::colorText(" [√] Ejecutando build...\n", self::GREEN);
         self::createBuild();
     }
 
@@ -17,15 +17,26 @@ class Make extends AbstractConsoleLibrary
     {
         # Creamos el archivo index.html
         echo "      [●] Creando index...\n";
-        $moduleContent = "<html><head><title>{$_ENV['NAME_PROJECT']}</title></head><body><div id='root'></div><script type='module' src='./App.jsx'></script></body></html>";
+        $appReactFile = $_ENV['USE_TYPESCRIPT'] ? 'App.tsx' : 'App.jsx';
+        $moduleContent = "<html><head><title>{$_ENV['NAME_PROJECT']}</title></head><body><div id='root'></div><script type='module' src='./" . $appReactFile . "'></script></body></html>";
         file_put_contents('./Project/themes/default/index.html', $moduleContent);
-        echo "      [●] Ejecutando build de react...\n";
-        # Ejecutamos el build de react
         chdir(".{$_ENV['PATH_THEME']}");
+        # Borramos package-lock.json
+        echo "      [●] Borrando package-lock.json y node_modules generado por el usuario ...\n";
+        exec('rm package-lock.json');
+        exec('rm -r node_modules');
+        # Regenerado node_module
+        echo "      [●] Regenerado node_modules ...\n";
+        exec('npm install');
+        # Ejecutamos el build
+        echo "      [●] Ejecutando build ...\n";
         exec('npm run build');
-        exec('del index.html');
+        echo "      [●] Limpiando archivos ...\n";
+        exec('rm -r node_modules');
+        exec('rm index.html');
+        exec('rm package-lock.json');
         # Capturamos el build
-        echo "      [●] Capturando build y renombrando archivos...\n";
+        echo "      [●] Capturando build ...\n";
         $filesDist = scandir("./dist/assets");
         # Renombramos los archivos
         foreach ($filesDist as $key => $file) {
@@ -35,9 +46,9 @@ class Make extends AbstractConsoleLibrary
             $extension = $filePath[count($filePath) - 1];
             rename("./dist/assets/$file", "./dist/assets/themes.$extension");
         }
-        echo "      [●] Copiando build en themes...\n";
+        
         self::folderCopy('./dist/assets/', "../dist");
-        echo self::colorText(" [●] Build generado con exito...\n", self::GREEN);
+        echo self::colorText(" [√] Distribución productiva generada con exito ...\n", self::GREEN);
     }
 
     private static function folderCopy($source, $target)
@@ -98,11 +109,11 @@ class Make extends AbstractConsoleLibrary
                 $contenido = is_numeric($key) ? '' : $value;
                 $pathFileCopy = "./config/Commands/Models/$key";
                 $pathFileCopy = str_replace('.php', '.txt', $pathFileCopy);
-                
+
                 if (file_exists($pathFileCopy)) {
                     $contenido = file_get_contents($pathFileCopy);
                 }
-                
+
                 file_put_contents($filePath, $contenido); // Crea un archivo con contenido
             } else {
                 // Es un directorio
