@@ -19,7 +19,7 @@ class Migrations extends AbstractConsoleLibrary
             foreach ($queries as $query) {
                 if(!$query || empty($query)) continue;
                 
-                $status = $DB::query(trim($query));
+                $status = (bool)$DB::query(trim($query));
                 if($status){
                     echo "          [√] ".substr(trim(str_replace(array("\r", "\n"), '', $query)), 0, 70)." ... \n";
                 }else{
