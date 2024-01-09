@@ -8,7 +8,7 @@ class Migrations extends AbstractConsoleLibrary
 
     public static function migrate($DB)
     { 
-        $rutaDirectorio = 'src/Modules'; // Ruta del directorio principal 'Modules'
+        $rutaDirectorio = 'Project/src/Modules'; // Ruta del directorio principal 'Modules'
         $arrayQueries = [];
         self::buscarArchivoMigrations($rutaDirectorio, $arrayQueries); // Llamar a la función para buscar el archivo 'Migrations.sql' dentro del directorio
         if(!$arrayQueries) echo " [x] No se encontraron migraciones \n";
