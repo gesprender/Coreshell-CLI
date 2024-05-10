@@ -22,22 +22,21 @@ abstract class Coreshell extends AbstractConsoleLibrary
             echo "Usa un comando.";
             die;
         }
-        $comand = explode('::', $_SERVER['argv'][1]);
+        $comand = explode(':', $_SERVER['argv'][1]);
 
-        switch ($comand[0]) {
-            case 'Server':
-            case 'server':
+        switch (strtoupper($comand[0])) {
+            case 'SERVER':
                 echo self::colorText(" [√] ", self::GREEN) . "Encendiendo el servidor GesPrender-Core-Framework \n";
                 echo self::colorText(" [√] ", self::GREEN) . "Listen in http://localhost:2024 \n";
                 exec("php -S localhost:2024");
                 break;
-            case 'Make':
+            case 'MAKE':
                 # Posibles comandos Make
-                switch ($comand[1]) {
-                    case 'build':
+                switch (strtoupper($comand[1])) {
+                    case 'BUILD':
                         Make::build();
                         break;
-                    case 'project':
+                    case 'PROJECT':
                         Make::project();
                         break;
                     default:
@@ -45,10 +44,10 @@ abstract class Coreshell extends AbstractConsoleLibrary
                         die;
                 }
                 break;
-            case 'Migrations':
+            case 'MIGRATIONS':
                 # Posibles comandos Migrations
-                switch ($comand[1]) {
-                    case 'migrate':
+                switch (strtoupper($comand[1])) {
+                    case 'MIGRATE':
                         Migrations::migrate($DB);
                         break;
 

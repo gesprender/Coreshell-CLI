@@ -38,7 +38,7 @@ class Migrations extends AbstractConsoleLibrary
 
         # Load backoffice migrations
         echo " [●] Ejecutando migraciones de BackOffice \n";
-        $rutaDirectorio = 'Backoffice/backend/Modules'; // Ruta del directorio principal 'Modules'
+        $rutaDirectorio = 'Backoffice/src/Migrations'; // Ruta del directorio principal 'Modules'
         $arrayQueries = [];
         self::buscarArchivoMigrations($rutaDirectorio, $arrayQueries); // Llamar a la función para buscar el archivo 'Migrations.sql' dentro del directorio
         if (!$arrayQueries) {
