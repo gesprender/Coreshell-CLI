@@ -33,11 +33,10 @@ abstract class Coreshell extends AbstractConsoleLibrary
             case 'MAKE':
                 # Posibles comandos Make
                 switch (strtoupper($comand[1])) {
-                    case 'BUILD':
-                        Make::build();
-                        break;
-                    case 'PROJECT':
-                        Make::project();
+                    case 'MODULE':
+                        if (!isset($_SERVER['argv'][2])) die(self::colorText(" [x] ", self::RED) . " Ingresa el nombre del modulo");
+
+                        Make::module($_SERVER['argv'][2]);
                         break;
                     default:
                         echo " [x] Comando no reconocido ...";
