@@ -88,7 +88,7 @@ class Make extends AbstractConsoleLibrary
                                 "Store" => [
                                     "serviceStore.js"
                                 ],
-                                "routes.jsx" => "",
+                                "routes.jsx" => generateRoute($moduleName),
                                 "Sidebar.jsx" => sidebarJSX($moduleName),
                                 "$moduleName.jsx" => moduleJSX($moduleName),
                                 "$moduleName.scss" => "",
@@ -227,4 +227,20 @@ export default {
   Component: Sidebar,
   Position: 'Up'
 };";
+}
+
+function generateRoute($module) {
+    return "import { Layout } from '../../../Theme/Layout/Layout';
+import $module from './$module';
+
+const PrincipalComponent = <Layout children={<$module />} />
+
+const routes = [
+  {
+    path: '$module',
+    element: PrincipalComponent,
+  },
+];
+
+export default routes;";
 }
