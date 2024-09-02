@@ -88,9 +88,7 @@ class Make extends AbstractConsoleLibrary
                                 "Store" => [
                                     "serviceStore$moduleName.js" => generateServiceZustand($moduleName),
                                 ],
-                                "CoreHooks" => [
-                                    "Sidebar.jsx" => sidebarJSX($moduleName),
-                                ],
+                                "Sidebar.jsx" => sidebarJSX($moduleName),
                                 "routes.jsx" => generateRoute($moduleName),
                                 "$moduleName.jsx" => moduleJSX($moduleName),
                                 "$moduleName.scss" => "",
