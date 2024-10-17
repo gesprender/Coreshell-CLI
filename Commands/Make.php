@@ -224,6 +224,7 @@ const Sidebar = () => {
 export default {
   Role: 'default',
   Permission: '$module',
+  Module: '$module',
   Component: Sidebar,
   Position: 'Up'
 };";
