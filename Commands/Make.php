@@ -250,7 +250,7 @@ function generateServiceZustand($module) {
     return "import { create } from 'zustand';
 import { BackendRequest } from '../../../../Theme/Services/Backend';
 
-export const setviceStore$module = create((set, get) => ({
+export const serviceStore$module = create((set, get) => ({
   response: {},
   
   getAll: async () => {
@@ -265,6 +265,6 @@ export const setviceStore$module = create((set, get) => ({
   
 }));
 
-// setviceStore$module((state) => state.response)
-// const { getAll } = setviceStore$module();";
+// serviceStore$module((state) => state.response)
+// const { getAll } = serviceStore$module();";
 }
