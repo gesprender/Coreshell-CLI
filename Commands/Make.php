@@ -78,11 +78,11 @@ class Make extends AbstractConsoleLibrary
                     "Modules" => [
                         $moduleName => [
                             "Application" => [
-                                "GetById.php" => SetNameSpace($moduleName, "Application") . setContentApplication("GetById", $moduleName),
-                                "GetAll.php" => SetNameSpace($moduleName, "Application") . setContentApplication("GetAll", $moduleName),
-                                "SetElement.php" => SetNameSpace($moduleName, "Application") . setContentApplication("SetElement", $moduleName),
-                                "RemoveElement.php" => SetNameSpace($moduleName, "Application") . setContentApplication("RemoveElement", $moduleName),
-                                "UpdateElement.php" => SetNameSpace($moduleName, "Application") . setContentApplication("UpdateElement", $moduleName),
+                                "GetById.php" => SetNameSpace($moduleName, "Application") . setContentApplication("GetById", $moduleName, 'GET'),
+                                "GetAll.php" => SetNameSpace($moduleName, "Application") . setContentApplication("GetAll", $moduleName, 'GET'),
+                                "SetElement.php" => SetNameSpace($moduleName, "Application") . setContentApplication("SetElement", $moduleName, 'POST'),
+                                "RemoveElement.php" => SetNameSpace($moduleName, "Application") . setContentApplication("RemoveElement", $moduleName, 'DELETE'),
+                                "UpdateElement.php" => SetNameSpace($moduleName, "Application") . setContentApplication("UpdateElement", $moduleName, 'PUT'),
                             ],
                             "Design" => [
                                 "Store" => [
@@ -101,7 +101,6 @@ class Make extends AbstractConsoleLibrary
                                     "Install.sql" => "INSERT INTO `modules` (`id`,`module_dependency`,`module_name`,`name`,`description`,`premium`,`count`,`is_website`,`active`, `view_in_front`) VALUES (NULL,NULL,'$moduleName','$moduleName','$moduleName','0','0','0','1', '1');",
                                     "Uninstall.sql" => "",
                                 ],
-                                $moduleName."Controller.php" => SetNameSpace($moduleName, "Infrastructure").setController($moduleName),
                                 $moduleName."Repository.php" => SetNameSpace($moduleName, "Infrastructure").setRepository($moduleName),
                             ],
                         ],
@@ -121,14 +120,20 @@ function SetNameSpace($module, $end) {
     return "<?php #GesPrender Core Framework\ndeclare(strict_types=1);\nnamespace Backoffice\Modules\\" . $module ."\\".$end . ";";
 }
 
-function setContentApplication($file, $module) {
+function setContentApplication($file, $module, $method = 'GET') {
     return "\n
 use Backoffice\Modules\\".$module."\Infrastructure\\". $module ."Repository;
 use Core\Services\JsonResponse;
 
-class $file  extends ".$module."Repository
+final class $file extends ".$module."Repository
 {
-    public static function action(): JsonResponse
+    public function __construct() {
+        ".'$this->run();'."
+    }
+
+    # [Route('/".strtolower($module)."/".strtolower($file)."', name: '$file', methods: '$method')]
+    # useMiddleware
+    public function run(): JsonResponse
     {
         try {
             #code :)
@@ -141,44 +146,6 @@ class $file  extends ".$module."Repository
         } catch (\Throwable \$th) {
             return self::ExceptionResponse(\$th, '$file:action');
         }
-    }
-}";
-}
-
-function setController($module) {
-    return "\n
-use Backoffice\Modules\\".$module."\Application\GetById;
-use Backoffice\Modules\\".$module."\Application\GetAll;
-use Backoffice\Modules\\".$module."\Application\SetElement;
-use Backoffice\Modules\\".$module."\Application\RemoveElement;
-use Backoffice\Modules\\".$module."\Application\UpdateElement;
-use Core\Contracts\RequestControllerInterface;
-use Core\Services\Request;
-
-class $module"."Controller implements RequestControllerInterface
-{
-    public static function endpoints(): void
-    {
-        Request::Route('/$module/get', function () {
-            GetById::action();
-        }, USE_MIDDLEWARE);
-
-        Request::Route('/$module/getAll', function () {
-            GetAll::action();
-        }, USE_MIDDLEWARE);
-
-        Request::Route('/$module/delete', function () {
-            RemoveElement::action();
-        }, USE_MIDDLEWARE);
-
-        Request::Route('/$module/update', function () {
-            UpdateElement::action();
-        }, USE_MIDDLEWARE);
-
-        Request::Route('/$module/create', function () {
-            SetElement::action();
-        }, USE_MIDDLEWARE);
-
     }
 }";
 }
@@ -248,13 +215,13 @@ export default routes;";
 
 function generateServiceZustand($module) {
     return "import { create } from 'zustand';
-import { BackendRequest } from '../../../../Theme/Services/Backend';
+import { BackendRequest } from '../../../Connector';
 
 export const serviceStore$module = create((set, get) => ({
   response: {},
   
   getAll: async () => {
-    const request = await BackendRequest.Get('/$module/getAll');
+    const request = await BackendRequest.Get('/$module/getall');
 
     if(request?.data){
       set({ response: request.data });
@@ -265,6 +232,6 @@ export const serviceStore$module = create((set, get) => ({
   
 }));
 
-// serviceStore$module((state) => state.response)
+// const data = serviceStore$module((state) => state.response)
 // const { getAll } = serviceStore$module();";
 }
