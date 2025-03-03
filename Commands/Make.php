@@ -124,9 +124,12 @@ function setContentApplication($file, $module, $method = 'GET') {
     return "\n
 use Backoffice\Modules\\".$module."\Infrastructure\\". $module ."Repository;
 use Core\Services\JsonResponse;
+use Core\Contracts\Traits\TraitRequest;
 
 final class $file extends ".$module."Repository
 {
+    use TraitRequest;
+
     public function __construct() {
         ".'$this->run();'."
     }
